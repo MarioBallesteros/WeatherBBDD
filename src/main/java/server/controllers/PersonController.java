@@ -1,13 +1,13 @@
 package server.controllers;
 
-import es.ieslvareda.model.Person;
-import es.ieslvareda.model.Result;
-import es.ieslvareda.server.model.IPersonService;
-import es.ieslvareda.server.model.ImpPersonService;
-import es.ieslvareda.server.model.JsonTransformer;
+
+import model.Ciudad;
+import model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.model.ICityService;
+import server.model.ImpCityService;
+import server.model.JsonTransformer;
 import spark.Request;
 import spark.Response;
 
@@ -17,18 +17,18 @@ public class PersonController {
 
     static Logger logger = LoggerFactory.getLogger(PersonController.class);
 
-    private static ICityService service = new ImpPersonService();
-    private static JsonTransformer<Person> jsonTransformer = new JsonTransformer<>();
+    private static ICityService service = new ImpCityService();
+    private static JsonTransformer<Ciudad> jsonTransformer = new JsonTransformer<>();
 
-    public static List<Person> getPersons(Request req, Response res){
+    public static List<Ciudad> getPersons(Request req, Response res){
         logger.info("Receiving request for all persons");
         return service.getAll();
     }
-    public static Result<Person> getPerson(Request req, Response res){
+    public static Result<Ciudad> getCity(Request req, Response res){
         // http://localhost:4567/person?dni=1111
-        String dni = req.queryParams("dni");
-        logger.info("Get person with dni= " + dni);
-        Result result = service.get(dni);
+        String name = req.queryParams("name");
+        logger.info("Get city with name= " + name);
+        Result result = service.get(name);
         if(result instanceof Result.Success)
             res.status(200);
         else {
@@ -38,12 +38,12 @@ public class PersonController {
         return result;
     }
 
-    public static Result<Person> addPerson(Request request, Response res) {
-        logger.info("Add new person");
+    public static Result<Ciudad> addCity(Request request, Response res) {
+        logger.info("Add new city");
 
         String body = request.body();
-        Person p = jsonTransformer.getObjet(body,Person.class);
-        Result<Person> result = service.add(p);
+        Ciudad c = jsonTransformer.getObjet(body,Ciudad.class);
+        Result<Ciudad> result = service.add(c);
 
         if(result instanceof Result.Success)
             res.status(200);
